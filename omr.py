@@ -4,6 +4,9 @@ import utils
 ############
 widthImg = 900
 heightImg = 900
+quitions = 5
+choises = 5
+ans = [1, 2, 0, 1, 4]
 ###########################
 
 img = cv2.imread("./images/test1.jpg")
@@ -36,7 +39,8 @@ if biggestContour.size != 0 and gradePoints.size != 0:
     pt2 = np.float32([[0, 0], [widthImg, 0], [
                      0, heightImg], [widthImg, heightImg]])
     matrix = cv2.getPerspectiveTransform(pt1, pt2)
-    imgWrapColored = cv2.warpPerspective(img, matrix, (widthImg, heightImg))
+    imgWrapColored = cv2.warpPerspective(
+        img, matrix, (widthImg-60, heightImg-10))
 
     ptG1 = np.float32(gradePoints)
     ptG2 = np.float32([[0, 0], [325, 0], [
@@ -44,6 +48,24 @@ if biggestContour.size != 0 and gradePoints.size != 0:
     matrixG = cv2.getPerspectiveTransform(ptG1, ptG2)
     imgGradeDisply = cv2.warpPerspective(img, matrixG, (325, 150))
 
+    imgWrapGray = cv2.cvtColor(imgWrapColored, cv2.COLOR_BGR2GRAY)
+    _, imgthersh = cv2.threshold(imgWrapGray, 200, 255, cv2.THRESH_BINARY_INV)
+
+    boxes = utils.splitBoxes(imgthersh)
+    # myPixelValue=np.zeros((quitions,choises))
+    totalPixel = []
+    for image in boxes:
+        totalPixel.append(cv2.countNonZero(image))
+
+    myPixelValue = np.reshape(totalPixel, (quitions, choises))
+    # print(myPixelValue)
+    myIndex = []  # my give answer
+    for i in myPixelValue:
+        # print(i)
+        maxi = np.argmax(i)
+        print(maxi)
+        myIndex.append(maxi)
+    print(myIndex)
 
 cv2.imshow("img", img)
 cv2.imshow("imgCanny", imgCanny)
@@ -51,6 +73,7 @@ cv2.imshow("imgCountours", imgCountours)
 cv2.imshow("imgBigestCountours", imgBigestCountours)
 cv2.imshow("imgWrapColored", imgWrapColored)
 cv2.imshow("imgGradeDisply", imgGradeDisply)
+cv2.imshow("imgthersh", imgthersh)
 
 if cv2.waitKey(0) & 0xFF == ord("q"):
     cv2.destroyAllWindows()

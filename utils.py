@@ -30,11 +30,25 @@ def reorder(myPoints):
     myPoints = myPoints.reshape((4, 2))
     myPointsNew = np.zeros((4, 1, 2), np.int32)
     add = myPoints.sum(1)
-    # print(myPoints)
-    print(add)
+
+    # print(add)
     myPointsNew[0] = myPoints[np.argmin(add)]
     myPointsNew[3] = myPoints[np.argmax(add)]
     dif = np.diff(myPoints, axis=1)
+    # print(dif)
     myPointsNew[1] = myPoints[np.argmin(dif)]
     myPointsNew[2] = myPoints[np.argmax(dif)]
+
     return myPointsNew
+
+
+def splitBoxes(img, qustions=5, choises=5):
+    rows = np.vsplit(img, qustions)
+    boxes = []
+    for r in rows:
+
+        coloums = np.hsplit(r, choises)
+        for box in coloums:
+            boxes.append(box)
+
+    return boxes

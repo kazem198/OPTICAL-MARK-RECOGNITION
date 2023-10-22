@@ -52,3 +52,45 @@ def splitBoxes(img, qustions=5, choises=5):
             boxes.append(box)
 
     return boxes
+
+
+# def markAnswers(img, quitionsCo, choisesCo, myAns, Answers, widthImg, heightImg):
+#     rowHeight = heightImg/quitionsCo
+#     colWidth = widthImg/choisesCo
+
+    # for row in range(quitionsCo):
+    #     ans = Answers[row]
+    #     myans = myAns[row]
+
+    #     if ans == myans:
+    #         cv2.circle(img, (int(ans*colWidth + (colWidth/2)),
+    #                          int(row * rowHeight + (rowHeight/2))), 30, (0, 255, 0), -1)
+
+    #     else:
+    #         cv2.circle(img, (int(ans*colWidth + (colWidth/2)),
+    #                          int(row * rowHeight + (rowHeight/2))), 15, (0, 255, 0), -1)
+
+    #         cv2.circle(img, (int(myans*colWidth + (colWidth/2)),
+    #                          int(row * rowHeight + (rowHeight/2))), 30, (0, 0, 255), -1)
+
+
+def showAnswers(img, myIndex, grading, ans, quitions, choices):
+    secW = int(img.shape[1]/quitions)
+    secH = int(img.shape[0]/choices)
+
+    for x in range(0, quitions):
+        myAns = myIndex[x]
+        cX = (myAns*secW)+secW//2
+        cY = (x*secH) + secH//2
+
+        if (grading[x] == 1):
+            mycolor = (0, 255, 0)
+        else:
+            mycolor = (0, 0, 255)
+            correctAns = ans[x]
+            cv2.circle(img, ((correctAns*secW)+secW//2, (x*secH) +
+                       secH//2), 20, (0, 255, 0), cv2.FILLED)
+
+        cv2.circle(img, (cX, cY), 50, mycolor, cv2.FILLED)
+
+    return img

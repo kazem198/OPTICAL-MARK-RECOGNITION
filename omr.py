@@ -9,15 +9,15 @@ choises = 5
 ans = [1, 2, 0, 1, 4]
 ###########################
 
-img = cv2.imread("./images/test1.jpg")
+img = cv2.imread("./images/test2.jpg")
 img = cv2.resize(img, (widthImg, heightImg))
 imgCountours = img.copy()
 imgBigestCountours = img.copy()
 imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-imgblur = cv2.GaussianBlur(imgGray, (3, 3), 1)
+imgblur = cv2.GaussianBlur(imgGray, (3, 3), 2)
 imgCanny = cv2.Canny(imgblur, 10, 50)
-# imgCanny = cv2.dilate(imgCanny, (3, 3), iterations=1)
+imgCanny = cv2.dilate(imgCanny, (3, 3), iterations=1)
 contours, _ = cv2.findContours(
     imgCanny, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -40,7 +40,7 @@ if biggestContour.size != 0 and gradePoints.size != 0:
                      0, heightImg], [widthImg, heightImg]])
     matrix = cv2.getPerspectiveTransform(pt1, pt2)
     imgWrapColored = cv2.warpPerspective(
-        img, matrix, (widthImg-60, heightImg-10))
+        img, matrix, (widthImg, heightImg))
 
     ptG1 = np.float32(gradePoints)
     ptG2 = np.float32([[0, 0], [325, 0], [
@@ -63,9 +63,25 @@ if biggestContour.size != 0 and gradePoints.size != 0:
     for i in myPixelValue:
         # print(i)
         maxi = np.argmax(i)
-        print(maxi)
+        # print(maxi)
         myIndex.append(maxi)
-    print(myIndex)
+    # print(myIndex)
+    # grading
+    grading = []
+    for x in range(quitions):
+        if ans[x] == myIndex[x]:
+            grading.append(1)
+        else:
+            grading.append(0)
+    # print(grading)
+    score = (sum(grading)/quitions)*100
+    # print(score)
+    imgResult = imgWrapColored.copy()
+    imgResult = utils.showAnswers(
+        imgResult, myIndex, grading, ans, quitions, choises)
+
+    # utils.markAnswers(imgWrapColored, quitions, choises,
+    #                   myIndex, ans, widthImg, heightImg)
 
 cv2.imshow("img", img)
 cv2.imshow("imgCanny", imgCanny)
@@ -74,6 +90,7 @@ cv2.imshow("imgBigestCountours", imgBigestCountours)
 cv2.imshow("imgWrapColored", imgWrapColored)
 cv2.imshow("imgGradeDisply", imgGradeDisply)
 cv2.imshow("imgthersh", imgthersh)
+cv2.imshow("imgResult", imgResult)
 
 if cv2.waitKey(0) & 0xFF == ord("q"):
     cv2.destroyAllWindows()

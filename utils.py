@@ -89,8 +89,8 @@ def showAnswers(img, myIndex, grading, ans, quitions, choices):
             mycolor = (0, 0, 255)
             correctAns = ans[x]
             cv2.circle(img, ((correctAns*secW)+secW//2, (x*secH) +
-                       secH//2), 20, (0, 255, 0), cv2.FILLED)
+                       secH//2), 40, (0, 255, 0), cv2.FILLED)
 
-        cv2.circle(img, (cX, cY), 50, mycolor, cv2.FILLED)
+        cv2.circle(img, (cX, cY), 60, mycolor, cv2.FILLED)
 
     return img
